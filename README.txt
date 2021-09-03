@@ -1,16 +1,20 @@
+Re-work of previous simple fastapi app using sqlmodel.
+
 Requirments:
 * Python 3.7+
 * Pip
 
 
 Create python virtual enviroment
-> py -m venv blog-env
+> py -m venv env
 
 
 If using VSCode, set Python interpreter path if it doesn't already pickup the virtual env.
 
 
 Activate enviroment
+> .\env\Scripts\activate (Windows)
+
 > pip install -r requirements.txt
 
 Start server

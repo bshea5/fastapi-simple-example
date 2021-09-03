@@ -1,8 +1,10 @@
+from app.database import get_session
+from app.models.User import User
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm.session import Session
-from app.database import get_db
 from app import schemas, oauth2
 from app.services import users
+from sqlmodel import Session
+from app.hashing import Hash
 
 router = APIRouter(
   prefix="/users",
@@ -12,10 +14,18 @@ router = APIRouter(
   responses={}
 )
 
-@router.post('', response_model=schemas.ShowUser, status_code=status.HTTP_201_CREATED)
-def create(request: schemas.User, db: Session = Depends(get_db)):
-  return users.create(request, db)
+@router.post('', response_model=schemas.UserRead, status_code=status.HTTP_201_CREATED)
+def create_hero(*, session: Session = Depends(get_session), args: schemas.UserCreate):
+    args.password = Hash.encrypt(args.password)
+    db_user = User.from_orm(args)
+    # session.add(db_user)
+    # session.commit()
+    # session.refresh(db_user)
+    # return db_user
 
-@router.get('/{id}', response_model=schemas.ShowUser, status_code=status.HTTP_200_OK)
-def show(id: int, db: Session = Depends(get_db)):
-  return users.show(id, db)
+    return users.create(db_user, session)
+
+@router.get('/{id}', response_model=schemas.UserRead, status_code=status.HTTP_200_OK)
+def show(*, session: Session = Depends(get_session), id: int):
+  user = session.get(User, id)
+  return user

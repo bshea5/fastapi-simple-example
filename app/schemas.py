@@ -1,39 +1,19 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from sqlmodel import SQLModel
 
-
-class BlogBase(BaseModel):
-  title: str
-  body: str
-
-class Blog(BlogBase):
-  class Config():
-    orm_mode = True
-
-
-class User(BaseModel):
+class UserCreate(SQLModel):
   name: str
   email: str
   password: str
-
-
-class ShowUser(BaseModel):
+class UserRead(SQLModel):
+  id: int
   name: str
   email: str
-  blogs: List[Blog] = []
 
   # Since we use this in a query, we need ORM model on.
   class Config():
     orm_mode = True
-
-
-class ShowBlog(Blog):
-  creator: ShowUser
-
-  # Since we use this in a query, we need ORM model on.
-  class Config():
-    orm_mode = True
-
 
 class Login(BaseModel):
   username: str

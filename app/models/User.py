@@ -1,13 +1,7 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
-from ..database import Base
-
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    email = Column(String)
-    password = Column(String)
-
-    blogs = relationship('Blog', back_populates="creator")
+from typing import Optional
+from sqlmodel import SQLModel, Field
+class User(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    email: str
+    password: str

@@ -1,19 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from sqlalchemy.orm.session import Session
-from app.database import get_db
 from app import schemas
 from app.hashing import Hash
 from app import token 
 from app.models import User
+from sqlmodel import Session, select
+from app.database import get_session
 
 router = APIRouter(
   tags=['authentication']
 )
 
 @router.post('/login', response_model=schemas.Token)
-def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-  user = db.query(User).filter(User.email == request.username).first()
+def login(*, session: Session = Depends(get_session), request: OAuth2PasswordRequestForm = Depends()):
+  user = session.exec(select(User).where(User.email == request.username)).one()
+
   if not user or not Hash.verify(request.password, user.password):
     raise HTTPException(
       status_code=status.HTTP_404_NOT_FOUND, 
