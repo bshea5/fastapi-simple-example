@@ -21,3 +21,5 @@ For VSCode, I've set it up to start on 'F5' command.
 OpenAPI(Swagger): http://127.0.0.1:8000/docs
 Redoc: http://127.0.0.1:8000/redoc
 
+Checkout 'sqlmodel' branch to use a rework of this app using SQLModel.
+
